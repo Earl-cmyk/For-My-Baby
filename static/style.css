@@ -1,43 +1,89 @@
+/* Replace or merge into static/style.css -- centers the envelope and increases size */
 body {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-  height: 100vh;
   margin: 0;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at bottom, #ffd6e0, #ff9a9e, #fbc2eb);
+  overflow: hidden;
 }
+
+/* subtle animated glow background */
+.heart-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.heart-bg::before, .heart-bg::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  top: -50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 1%, transparent 60%);
+  filter: blur(36px);
+  animation: rotate 30s linear infinite;
+}
+@keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .container {
   position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* centers horizontally */
+  justify-content: center;/* centers vertically */
+  gap: 18px;
+  width: 100%;
+  height: 100vh;          /* ensures true centering */
+  box-sizing: border-box;
+  padding: 20px;
+  text-align: center;
 }
 
+.title {
+  font-family: "Dancing Script", cursive;
+  font-size: 2.1rem;
+  color: #ff5e88;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 93, 138, 0.45);
+}
+
+/* ===== ENVELOPE (bigger, centered) ===== */
 .envelope {
   position: relative;
-  width: 300px;
-  height: 200px;
+  width: 420px;    /* increased size */
+  height: 260px;   /* increased size */
   background: #fff;
-  border: 2px solid #ff6f91;
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 1s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.22);
+  transition: transform 0.35s ease;
+}
+.envelope:hover {
+  transform: translateY(-6px) scale(1.02);
 }
 
+/* flap scaled to new envelope size */
 .flap {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100px;
-  background: #ff6f91;
+  height: 125px;
+  background: linear-gradient(180deg, #ff7f9c, #ff4f7b);
   clip-path: polygon(0 0, 50% 100%, 100% 0);
   transform-origin: top;
-  transition: transform 1s ease;
-  z-index: 2;
+  transition: transform 0.9s cubic-bezier(.2,.9,.2,1);
+  z-index: 3;
 }
 
+/* letter area matches new size and allows scrolling on long text */
 .letter {
   position: absolute;
   top: 100%;
@@ -45,26 +91,48 @@ body {
   width: 100%;
   height: 100%;
   background: #fff;
-  text-align: center;
-  padding: 20px;
+  padding: 26px;
   box-sizing: border-box;
-  transition: top 1s ease;
+  overflow-y: auto;
+  transition: top 0.9s cubic-bezier(.2,.9,.2,1);
 }
 
+/* message font sizing for readability */
 .message {
   opacity: 0;
-  transition: opacity 1s ease 0.5s;
-  color: #444;
+  color: #4b4b4b;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  transition: opacity 0.8s ease 0.45s;
+  text-align: left;
 }
 
-.open .flap {
-  transform: rotateX(180deg);
-}
+/* open state */
+.open .flap { transform: rotateX(180deg); }
+.open .letter { top: 0; }
+.open .message { opacity: 1; }
 
-.open .letter {
-  top: 0;
+/* hint below envelope */
+.hint {
+  margin-top: 6px;
+  font-size: 0.98rem;
+  color: #ff4f7b;
+  animation: blink 1.5s infinite;
 }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.45} }
 
-.open .message {
-  opacity: 1;
+/* floating hearts (same logic as before) */
+@keyframes float {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+}
+.heart { position: absolute; bottom: -10px; font-size: 1.5rem; animation: float 5s linear infinite; }
+
+/* RESPONSIVE: shrink gracefully on small screens */
+@media (max-width: 600px) {
+  .title { font-size: 1.6rem; }
+  .envelope { width: 92%; height: 240px; border-radius: 12px; }
+  .flap { height: 110px; }
+  .letter { padding: 18px; }
+  .message { font-size: 0.98rem; }
 }
