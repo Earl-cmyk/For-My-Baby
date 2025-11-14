@@ -1,23 +1,32 @@
-/* Replace or merge into static/style.css -- centers the envelope and increases size */
+/* ===== GLOBAL RESET ===== */
 body {
   margin: 0;
-  height: 100vh;
   font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: radial-gradient(circle at bottom, #ffd6e0, #ff9a9e, #fbc2eb);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-/* subtle animated glow background */
+/* ===== SOFT BACKGROUND ANIMATION ===== */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 1.8rem;
+  pointer-events: none;
+  z-index: 999;
+  animation-name: float;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
 .heart-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
-.heart-bg::before, .heart-bg::after {
+
+.heart-bg::before,
+.heart-bg::after {
   content: "";
   position: absolute;
   width: 200%;
@@ -28,48 +37,48 @@ body {
   filter: blur(36px);
   animation: rotate 30s linear infinite;
 }
-@keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== MAIN CONTAINERS ===== */
 .container {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;    /* centers horizontally */
-  justify-content: center;/* centers vertically */
-  gap: 18px;
+  padding: 80px 20px;
   width: 100%;
-  height: 100vh;          /* ensures true centering */
   box-sizing: border-box;
-  padding: 20px;
   text-align: center;
 }
 
 .title {
   font-family: "Dancing Script", cursive;
-  font-size: 2.1rem;
+  font-size: 2.4rem;
   color: #ff5e88;
-  margin: 0;
-  text-shadow: 0 0 10px rgba(255, 93, 138, 0.45);
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 93, 138, 0.4);
 }
 
-/* ===== ENVELOPE (bigger, centered) ===== */
+/* ===== ENVELOPE ===== */
 .envelope {
   position: relative;
-  width: 420px;    /* increased size */
-  height: 260px;   /* increased size */
+  width: 420px;
+  height: 260px;
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
+  margin: 0 auto;
   box-shadow: 0 14px 34px rgba(0,0,0,0.22);
   transition: transform 0.35s ease;
 }
+
 .envelope:hover {
   transform: translateY(-6px) scale(1.02);
 }
 
-/* flap scaled to new envelope size */
 .flap {
   position: absolute;
   top: 0;
@@ -83,7 +92,6 @@ body {
   z-index: 3;
 }
 
-/* letter area matches new size and allows scrolling on long text */
 .letter {
   position: absolute;
   top: 100%;
@@ -92,12 +100,11 @@ body {
   height: 100%;
   background: #fff;
   padding: 26px;
-  box-sizing: border-box;
   overflow-y: auto;
+  box-sizing: border-box;
   transition: top 0.9s cubic-bezier(.2,.9,.2,1);
 }
 
-/* message font sizing for readability */
 .message {
   opacity: 0;
   color: #4b4b4b;
@@ -112,31 +119,19 @@ body {
 .open .letter { top: 0; }
 .open .message { opacity: 1; }
 
-/* hint below envelope */
 .hint {
-  margin-top: 6px;
-  font-size: 0.98rem;
+  margin-top: 10px;
+  font-size: 1rem;
   color: #ff4f7b;
   animation: blink 1.5s infinite;
 }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.45} }
 
-/* floating hearts (same logic as before) */
-@keyframes float {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
-}
-.heart { position: absolute; bottom: -10px; font-size: 1.5rem; animation: float 5s linear infinite; }
-
-/* RESPONSIVE: shrink gracefully on small screens */
-@media (max-width: 600px) {
-  .title { font-size: 1.6rem; }
-  .envelope { width: 92%; height: 240px; border-radius: 12px; }
-  .flap { height: 110px; }
-  .letter { padding: 18px; }
-  .message { font-size: 0.98rem; }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
 }
 
+/* ===== SECTIONS WITH FADE-IN ===== */
 .second {
   opacity: 0;
   transform: translateY(50px);
@@ -147,6 +142,7 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
 .second.visible .envelope {
   animation: glowIn 1.5s ease forwards;
 }
@@ -154,4 +150,206 @@ body {
 @keyframes glowIn {
   0% { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(4px); }
   100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ===== BEAUTIFUL SCROLL ===== */
+.scroll-section {
+  width: 0;
+  max-width: 0;
+  height: 0;
+  margin: 80px auto;
+  opacity: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  background: radial-gradient(circle at center, #f5e1c1 0%, #b07b3a 100%);
+  padding: 0;
+  cursor: pointer;
+  transition: all 1.5s ease;
+}
+
+.scroll-section.open {
+  width: 85%;
+  max-width: 650px;
+  height: 450px;
+  padding: 40px 30px;
+  border-radius: 16px;
+  opacity: 1;
+}
+
+.scroll-bg {
+  padding: 20px;
+}
+
+.scroll-text {
+  font-family: "Dancing Script", cursive;
+  font-size: 20px;
+  color: #4a2c2a;
+  line-height: 1.9;
+  letter-spacing: 0.5px;
+  white-space: pre-line;
+  text-align: justify;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.2);
+}
+
+/* Scrollbars */
+.scroll-section::-webkit-scrollbar { width: 8px; }
+.scroll-section::-webkit-scrollbar-track { background: transparent; }
+.scroll-section::-webkit-scrollbar-thumb {
+  background: rgba(74, 44, 42, 0.4);
+  border-radius: 4px;
+}
+.scroll-section::-webkit-scrollbar-thumb:hover { background: rgba(74, 44, 42, 0.6); }
+.scroll-section { scrollbar-width: thin; scrollbar-color: rgba(74,44,42,0.4) transparent; }
+
+/* ===== BUTTON ===== */
+.scroll-btn-wrapper { text-align: center; margin-top: 20px; }
+#openScrollBtn {
+  font-family: "Dancing Script", cursive;
+  font-size: 22px;
+  padding: 12px 25px;
+  background: #b07b3a;
+  color: #fdf1d0;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+#openScrollBtn:hover { background: #9c6530; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+#openScrollBtn:active { transform: translateY(1px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .title { font-size: 1.8rem; }
+  .envelope { width: 92%; height: 240px; }
+  .flap { height: 110px; }
+  .letter { padding: 18px; }
+  .message { font-size: 0.95rem; }
+}
+
+/* ===== FLOATING HEART ===== */
+@keyframes float {
+  0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0; }
+  20% { opacity: 1; }
+  50% { transform: translateX(-20px) translateY(-150px) rotate(10deg); }
+  70% { transform: translateX(20px) translateY(-250px) rotate(-10deg); }
+  100% { transform: translateX(-10px) translateY(-350px) rotate(0deg); opacity: 0; }
+}
+
+/* SCROLL SECTION */
+.scroll-section {
+  width: 0;
+  max-width: 0;
+  height: 0;
+  margin: 80px auto;
+  opacity: 0;
+  border-radius: 4px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  background: radial-gradient(circle at center, #f5e1c1 0%, #b07b3a 100%);
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden; /* initially hidden to prevent scroll before opening */
+  transition: all 1.5s ease;
+}
+
+/* OPEN STATE — scroll works */
+.scroll-section.open {
+  width: 85%;
+  max-width: 650px;
+  height: 450px;
+  padding: 40px 30px;
+  border-radius: 16px;
+  opacity: 1;
+  overflow-y: auto; /* enable vertical scroll */
+}
+
+/* SCROLLBARS — subtle and transparent */
+.scroll-section::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-section::-webkit-scrollbar-thumb {
+  background: rgba(74, 44, 42, 0.3); /* subtle thumb */
+  border-radius: 4px;
+}
+.scroll-section::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 44, 42, 0.5);
+}
+
+/* Firefox */
+.scroll-section {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(74,44,42,0.3) transparent;
+}
+
+.pokemon-box {
+  width: 90%;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffe8c1;
+  border: 3px solid #b07b3a;
+  border-radius: 20px;
+  text-align: center;
+  font-family: "Dancing Script", cursive;
+  font-size: 20px;
+  color: #4a2c2a;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.pokemon-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.pokemon-buttons button {
+  font-family: "Dancing Script", cursive;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#yesBtn {
+  background: #ffb347;
+  color: #fff;
+}
+
+#yesBtn:hover {
+  background: #ffa733;
+  transform: translateY(-2px);
+}
+
+#noBtn {
+  position: relative;
+  z-index: 1000;
+  background: #d9534f;
+  color: #fff;
+}
+
+#noBtn:hover {
+  background: #c9302c;
+  transform: translateY(-2px);
+}
+
+/* Dog GIF container hidden by default */
+.dog-container {
+  display: none;
+  width: 90%;
+  max-width: 500px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.dog-container img {
+  width: 100%;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
 }
