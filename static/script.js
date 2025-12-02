@@ -75,5 +75,31 @@ if (yesBtn && noBtn && pokemonBox && dogContainer) {
     noBtn.style.top = randomY + 'px';
   });
 }
+/* ===== CALL + DRESS DESIGN BOX ===== */
+  const callBox2 = document.getElementById('callBox2');
+  const yesCallBtn2 = document.getElementById('yesCallBtn2');
+  const noCallBtn2 = document.getElementById('noCallBtn2');
+  const dogCallContainer2 = document.getElementById('dogCallContainer2');
+
+  if (yesCallBtn2 && noCallBtn2 && callBox2 && dogCallContainer2) {
+    yesCallBtn2.addEventListener('click', () => {
+      callBox2.style.display = 'none';
+      dogCallContainer2.style.display = 'block';
+    });
+
+    noCallBtn2.addEventListener('click', () => {
+      const maxX = window.innerWidth - noCallBtn2.offsetWidth;
+      const maxY = window.innerHeight - noCallBtn2.offsetHeight;
+
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      noCallBtn2.style.position = 'absolute';
+      noCallBtn2.style.transition = 'all 0.3s ease';
+      noCallBtn2.style.left = randomX + 'px';
+      noCallBtn2.style.top = randomY + 'px';
+    });
+  }
 
 });
+
