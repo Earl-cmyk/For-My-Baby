@@ -77,3 +77,16 @@ if (yesBtn && noBtn && pokemonBox && dogContainer) {
 }
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const giftBox = document.getElementById("giftBox");
+  const giftLid = document.getElementById("giftLid");
+
+  if (giftBox && giftLid) {
+    giftLid.addEventListener("click", () => {
+      giftBox.classList.add("open");
+      console.log("🎁 Gift opened");
+    });
+  }
+});
+
